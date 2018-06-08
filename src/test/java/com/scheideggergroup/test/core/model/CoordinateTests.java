@@ -51,7 +51,7 @@ public class CoordinateTests {
         double randomValidLatitude = ThreadLocalRandom.current().nextDouble(MIN_LATITUDE_VALUE, MAX_LATITUDE_VALUE + 1);
 
         double randomValidLongitude = ThreadLocalRandom.current().nextDouble(MIN_LONGITUDE_VALUE, MAX_LONGITUDE_VALUE + 1);
-        
+
         Assertions.assertThrows(IllegalArgumentException.class, () -> new Coordinate(MIN_LATITUDE_VALUE - PRECISION, randomValidLongitude));
         Assertions.assertThrows(IllegalArgumentException.class, () -> new Coordinate(randomValidLatitude, MIN_LONGITUDE_VALUE - PRECISION));
         Assertions.assertThrows(IllegalArgumentException.class, () -> new Coordinate(MAX_LATITUDE_VALUE + PRECISION, randomValidLongitude));

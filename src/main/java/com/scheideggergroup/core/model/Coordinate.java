@@ -1,5 +1,7 @@
 package com.scheideggergroup.core.model;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +22,13 @@ public class Coordinate {
     
     public static final double PRECISION = 0.00001;
     
-    double latitude;
-	double longitude;
+    @Min(value = -90, message= "Latitude in decimal degrees cannot be less than -90.")
+    @Max(value = 90, message= "Latitude in decimal degrees cannot be greater than 90.")
+    private double latitude;
+
+    @Min(value = -180, message= "Longitude in decimal degrees cannot be less than -180.")
+    @Max(value = 180, message= "Longitude in decimal degrees cannot be greater than 180.")
+    private double longitude;
 	
 	/**
 	 * Creates a new instance of the Coordinate class.

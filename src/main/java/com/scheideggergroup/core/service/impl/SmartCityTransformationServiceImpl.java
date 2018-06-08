@@ -29,7 +29,7 @@ public class SmartCityTransformationServiceImpl implements TransformationService
      */
     public SmartCityTransformationServiceImpl() {
 
-        LOGGER.debug("On OrikaTransformServiceImpl() Constructor.");
+        LOGGER.debug("On SmartCityTransformationServiceImpl() Constructor.");
 
         // Instantiate the Mapper Factory
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
@@ -65,16 +65,16 @@ public class SmartCityTransformationServiceImpl implements TransformationService
 	public Route map(Polyline polyline) {
 		EncodedPolyline abc = new EncodedPolyline(polyline.getEncodedPolyline());
         List<LatLng> t = abc.decodePath();
-        Route r = new Route();
+        Route route = new Route();
         List<Coordinate> coordList = new ArrayList<Coordinate>(); 
 
         for(LatLng coord : t){
         	coordList.add(map(coord, Coordinate.class));
         }
         
-        r.setPath(coordList);
+        route.setPath(coordList);
         
-		return r;
+		return route;
 	}
 
 }

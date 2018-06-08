@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class responsible to store coordinates.
+ * Class responsible to store coordinates in signaled decimal degrees.
  * @author scheidv1
  *
  */
@@ -70,7 +70,13 @@ public class Coordinate {
 		this.longitude = longitude;
 	}
 	
-	public boolean testLatitude(double latitude) {
+	/**
+	 * Checks whether the latitude is valid.
+	 * @param latitude The latitude to be set of the coordinate in signaled decimal degrees.
+	 * @return a boolean equals True when the latitude is valid.
+	 * @throws IllegalArgumentException Exception thrown when the parameter is invalid.
+	 */
+	public boolean testLatitude(double latitude) throws IllegalArgumentException {
 		if (latitude > MAX_LATITUDE_VALUE || latitude < MIN_LATITUDE_VALUE) {
 	        logger.error(String.format("Error while setting the latitude %1$+10.5f on a coordinate.", latitude));
 			throw new IllegalArgumentException("Latitude in decimal degrees cannot be greater than 90.");
@@ -78,11 +84,23 @@ public class Coordinate {
 		return true;
 	}
 
-	public boolean testLongitude(double longitude) {
+	/**
+	 * Checks whether the longitude is valid.
+	 * @param longitude The longitude to be set of the coordinate in signaled decimal degrees.
+	 * @return a boolean equals True when the longitude is valid.
+	 * @throws IllegalArgumentException Exception thrown when the parameter is invalid.
+	 */
+	public boolean testLongitude(double longitude) throws IllegalArgumentException {
         if (longitude > MAX_LONGITUDE_VALUE || longitude < MIN_LONGITUDE_VALUE) {
             logger.error(String.format("Error while setting the longitude %1$+10.5f on a coordinate.", longitude));
 			throw new IllegalArgumentException("Longitude in decimal degrees cannot be greater than 180.");
 		}
 		return true;
 	}
+	
+    @Override
+    public String toString() {
+        return String.format("[Coordinate = [[latitude = %1$+10.5f], [longitude = %2$+10.5f]]]", this.latitude, this.longitude);
+    }
+
 }

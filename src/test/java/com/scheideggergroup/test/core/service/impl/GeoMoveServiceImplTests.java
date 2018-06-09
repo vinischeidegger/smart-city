@@ -6,14 +6,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.scheideggergroup.core.app.SmartCityCoreApiWebApp;
 import com.scheideggergroup.core.model.Coordinate;
@@ -33,7 +29,6 @@ public class GeoMoveServiceImplTests {
     @Test
     public void robotMoveTest() {
         
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
         List<Coordinate> path = Arrays.asList(new Coordinate(41.42341, 2.13987), new Coordinate(41.38093, 2.18562));
         
         Route route = new Route();

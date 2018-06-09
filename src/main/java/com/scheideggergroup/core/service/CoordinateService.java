@@ -10,7 +10,6 @@ import com.scheideggergroup.core.model.Step;
  * @author scheidv1
  *
  */
-@Service("coordinateService")
 public interface CoordinateService {
 
     /**

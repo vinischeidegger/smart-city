@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.scheideggergroup.core.model.Coordinate;
 import com.scheideggergroup.core.model.Route;
@@ -16,6 +17,7 @@ import com.scheideggergroup.core.service.CoordinateService;
  * @author scheidv1
  *
  */
+@Service("coordinateService")
 public class CoordinateServiceImpl implements CoordinateService {
 
     private static Logger logger = LoggerFactory.getLogger(CoordinateServiceImpl.class);

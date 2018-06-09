@@ -4,6 +4,11 @@ import com.scheideggergroup.core.event.RobotMovementListener;
 import com.scheideggergroup.core.model.Robot;
 import com.scheideggergroup.core.model.Route;
 
+/**
+ * Interface to represent a measuring robot movement services.
+ * @author scheidv1
+ *
+ */
 public interface GeoMoveService {
 
     /**
@@ -28,6 +33,11 @@ public interface GeoMoveService {
     /**
      * Sets the refresh rate in Hz
      */
-public void setRefreshRate(int refreshRate);
+    public void setRefreshRate(int refreshRate);
+
+    /**
+     * Sets the distance between air quality Measures
+     */
+    public void setDistanceBetweenAirQualityMeasures(double distancefromMeasureToMeasure);
 
 }

@@ -1,5 +1,6 @@
 package com.scheideggergroup.core.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Route {
@@ -7,6 +8,8 @@ public class Route {
 	private List<Coordinate> path;
     private List<Step> steps;
     private double totalDistance;
+    //This may be moved to a "Travel" class in the future to separate behavior.
+    private LocalDateTime travelStartTime;
 
 	public List<Coordinate> getPath() {
 		return path;
@@ -32,5 +35,13 @@ public class Route {
 
     public void setTotalDistance(double totalDistance) {
         this.totalDistance = totalDistance;
+    }
+
+    public LocalDateTime getTravelStartTime() {
+        return travelStartTime;
+    }
+
+    public void setTravelStartTime(LocalDateTime travelStartTime) {
+        this.travelStartTime = travelStartTime;
     }
 }

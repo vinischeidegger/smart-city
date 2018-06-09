@@ -39,7 +39,7 @@ public class Coordinate {
 		super();
 		testLatitude(latitude);
         testLongitude(longitude);
-        logger.debug(String.format("Creating a new coordinate with %1$+10.5f %2$+10.5f", latitude, longitude));
+        logger.trace(String.format("Creating a new coordinate with %1$+10.5f %2$+10.5f", latitude, longitude));
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}

@@ -1,6 +1,5 @@
 package com.scheideggergroup.core.service;
 
-import org.springframework.stereotype.Service;
 import com.scheideggergroup.core.model.Coordinate;
 import com.scheideggergroup.core.model.Route;
 import com.scheideggergroup.core.model.Step;

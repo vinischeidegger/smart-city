@@ -14,6 +14,7 @@ import com.scheideggergroup.core.service.CoordinateService;
 
 /**
  * Implementation of the CoordinateService interface for the planet Earth as being a perfectly round sphere and without altitude difference.
+ * Thanks to https://www.movable-type.co.uk/scripts/latlong.html
  * @author scheidv1
  *
  */
@@ -32,7 +33,7 @@ public class CoordinateServiceImpl implements CoordinateService {
 		double lat2 = finalCoordinate.getLatitude();
 		double lon2 = finalCoordinate.getLongitude();
 
-		logger.debug(String.format("Calculating distance between [%1$+10.5f, %2$+10.5f] and [%3$+10.5f, %4$+10.5f]", lat1, lon1, lat2, lon2));
+		logger.trace(String.format("Calculating distance between [%1$+10.5f, %2$+10.5f] and [%3$+10.5f, %4$+10.5f]", lat1, lon1, lat2, lon2));
 
 		double dLat = Math.toRadians(lat2-lat1);
 		double dLon = Math.toRadians(lon2-lon1);
@@ -45,7 +46,7 @@ public class CoordinateServiceImpl implements CoordinateService {
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 		double dist = EARTH_RADIUS  * c;
 		
-		logger.debug(String.format("Distance is %1$.1f meters", dist));
+		logger.trace(String.format("Distance is %1$.1f meters", dist));
 
 		return dist;
     }
@@ -73,7 +74,7 @@ public class CoordinateServiceImpl implements CoordinateService {
 		double dLat2 = finalCoordinate.getLatitude();
 		double dLon2 = finalCoordinate.getLongitude();
 
-		logger.debug(String.format("Calculating bearing between [%1$+10.5f, %2$+10.5f] and [%3$+10.5f, %4$+10.5f]", dLat1, dLon1, dLat2, dLon2));
+		logger.trace(String.format("Calculating bearing between [%1$+10.5f, %2$+10.5f] and [%3$+10.5f, %4$+10.5f]", dLat1, dLon1, dLat2, dLon2));
 
 		double lat1 = Math.toRadians(dLat1);
         double lat2 = Math.toRadians(dLat2);
@@ -83,7 +84,7 @@ public class CoordinateServiceImpl implements CoordinateService {
         double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
 		double bearing = Math.toDegrees(Math.atan2(y, x));
 
-		logger.debug(String.format("Bearing is %1$.3f degrees", bearing));
+		logger.trace(String.format("Bearing is %1$.3f degrees", bearing));
 
 		return bearing;
 	}
@@ -107,6 +108,7 @@ public class CoordinateServiceImpl implements CoordinateService {
         List<Step> steps = new ArrayList<Step>();
         int stepQty = path.size() - 1;
         double totalDistance = 0;
+        double startDistance = 0;
         
         for(int i = 0; i < stepQty; i++) {
             
@@ -118,6 +120,10 @@ public class CoordinateServiceImpl implements CoordinateService {
             totalDistance += distance;
             
             Step step = new Step(startCoordinate, endCoordinate, distance, bearing);
+            step.setInitialDistanceOnPath(startDistance);
+            double finalDistance = startDistance + distance;
+            step.setFinalDistanceOnPath(finalDistance);
+            startDistance = finalDistance;
             steps.add(step);
         }
         

@@ -1,9 +1,17 @@
 package com.scheideggergroup.core.model;
 
+import java.time.LocalDateTime;
+
+/**
+ * The representation of the moving robot.
+ * @author scheidv1
+ *
+ */
 public class Robot {
 
     private int speed;
-    private Coordinate currentCoordinate;
+    private LocalDateTime lastMeasuredTimestamp;
+    private Coordinate lastMeasuredCoordinate;
     private Route currentRoute;
     private double traveledDistance;
     
@@ -24,6 +32,22 @@ public class Robot {
     }
 
     /**
+     * Gets robot last measured time stamp.
+     * @return
+     */
+    public LocalDateTime getLastMeasuredTimestamp() {
+        return lastMeasuredTimestamp;
+    }
+
+    /**
+     * Sets robot last measured time stamp.
+     * @return
+     */
+    public void setLastMeasuredTimestamp(LocalDateTime lastMeasuredTimestamp) {
+        this.lastMeasuredTimestamp = lastMeasuredTimestamp;
+    }
+
+    /**
      * Checks if the Robot is being used (if there is route assigned to it).
      * @return
      */
@@ -32,19 +56,19 @@ public class Robot {
     }
 
     /**
-     * Gets robot current coordinate.
+     * Gets robot last measured coordinate.
      * @return
      */
-    public Coordinate getCurrentCoordinate() {
-        return currentCoordinate;
+    public Coordinate getLastMeasuredCoordinate() {
+        return lastMeasuredCoordinate;
     }
     
     /**
-     * Sets the robot current coordinate. (No thread safety).
-     * @param currentCoordinate
+     * Sets the robot last measured coordinate.
+     * @param lastMeasuredCoordinate
      */
-    public void setCurrentCoordinate(Coordinate currentCoordinate) {
-        this.currentCoordinate = currentCoordinate;
+    public void setLastMeasuredCoordinate(Coordinate lastMeasuredCoordinate) {
+        this.lastMeasuredCoordinate = lastMeasuredCoordinate;
     }
     
     /**

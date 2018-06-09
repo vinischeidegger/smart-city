@@ -66,12 +66,7 @@ public class GeoMoveServiceImpl implements GeoMoveService {
             logger.debug("Traveled Distance = " + workTraveledDistance);
             //if (workTraveledDistance >= workRoute.getTotalDistance()) {
             if (workTraveledDistance >= max) {
-                try {
-                    semaphore.acquire();
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                semaphore.release();
             }
         };
         

@@ -37,6 +37,15 @@ public interface CoordinateService {
     public Coordinate getFinalPositionAfterMove(Coordinate startCoordinate, double bearing, double distance);
     
     /**
+     * Calculates the final position after traveling a certain distance on a specified route.
+     * @param route The route to be traveled.
+     * @param totalTraveledDistance The distance to be traveled.
+     * @return The coordinate after traveling the distance. If the distance received as a parameter is 
+     * greater than the the route total distance the last coordinate on the route will be used
+     */
+    public Coordinate getFinalPositionAfterMove(Route route, double totalTraveledDistance);
+    
+    /**
      * Calculates the info needed (distance and direction) for traveling from the start coordinate to the final coordinate.
      * @param startCoordinate the starting coordinate.
      * @param finalCoordinate the final coordinate.
@@ -50,5 +59,5 @@ public interface CoordinateService {
      * @return the route with all steps calculated.
      */
     public Route calculateStepsOnRoute(Route route);
-    
+
 }

@@ -1,6 +1,9 @@
-package com.scheideggergroup.core.model;
+package com.scheideggergroup.core.event;
 
 import java.time.LocalDateTime;
+
+import com.scheideggergroup.core.model.Coordinate;
+import com.scheideggergroup.core.model.Robot;
 
 public class RobotMovementArgs {
 

@@ -107,7 +107,7 @@ public class Coordinate {
 	
     @Override
     public String toString() {
-        return String.format("[Coordinate = [[latitude = %1$+10.5f], [longitude = %2$+10.5f]]]", this.latitude, this.longitude);
+        return String.format("{Coordinate = {latitude = %1$+10.5f, longitude = %2$+10.5f}}", this.latitude, this.longitude);
     }
 
 }

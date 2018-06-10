@@ -52,4 +52,8 @@ public class AirQualityMeasure {
         return pm25;
     }
     
+    @Override
+    public String toString() {
+        return "AirQualityMeasure [measureDateTime=" + measureDateTime + ", location=" + location + ", pm25=" + pm25 + "]";
+    }
 }

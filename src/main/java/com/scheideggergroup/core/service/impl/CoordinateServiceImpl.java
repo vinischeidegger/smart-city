@@ -67,7 +67,48 @@ public class CoordinateServiceImpl implements CoordinateService {
     	return new Coordinate(Math.toDegrees(lat2), Math.toDegrees(lon2));
     }
 
-	public double getBearing(Coordinate startCoordinate, Coordinate finalCoordinate) {
+    @Override
+    public Coordinate getFinalPositionAfterMove(final Route workRoute, double totalTraveledDistance) {
+        
+        List<Step> stepsFromRoute = workRoute.getSteps();
+        if (stepsFromRoute == null) {
+            Route tempRoute = this.calculateStepsOnRoute(workRoute);
+            workRoute.setSteps(tempRoute.getSteps());
+            workRoute.setTotalDistance(tempRoute.getTotalDistance());
+        }
+        Step currentStep = null;
+        double initialDistanceOnStep = 0;
+        
+        if(totalTraveledDistance == 0) {
+            currentStep = stepsFromRoute.get(0);
+        } else {
+
+            for(Step routeStep : stepsFromRoute) {
+                initialDistanceOnStep = routeStep.getInitialDistanceOnPath();
+                if(totalTraveledDistance > routeStep.getInitialDistanceOnPath() && totalTraveledDistance <= routeStep.getFinalDistanceOnPath()) {
+                    currentStep = routeStep;
+                    break;
+                }
+            }
+            
+            // Current step will be null if traveled distance surpasses the last point
+            if(currentStep == null) {
+                currentStep = stepsFromRoute.get(stepsFromRoute.size()-1);
+                totalTraveledDistance = workRoute.getTotalDistance();
+            }
+        }
+        
+        logger.debug("Traveled Distance = " + totalTraveledDistance);
+
+        Coordinate stateCoordinate = this.getFinalPositionAfterMove(
+                                                    currentStep.getStartCoordinate(),
+                                                    currentStep.getBearing(),
+                                                    totalTraveledDistance - initialDistanceOnStep);
+        return stateCoordinate;
+    }
+ 
+	@Override
+    public double getBearing(Coordinate startCoordinate, Coordinate finalCoordinate) {
 		
 		double dLat1 = startCoordinate.getLatitude();
 		double dLon1 = startCoordinate.getLongitude();
@@ -132,5 +173,5 @@ public class CoordinateServiceImpl implements CoordinateService {
         
         return route;
     }
-    
+
 }

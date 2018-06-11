@@ -5,12 +5,16 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.scheideggergroup.core.model.Coordinate;
+import com.scheideggergroup.core.model.Polyline;
 import com.scheideggergroup.core.model.Route;
 import com.scheideggergroup.core.model.Step;
 import com.scheideggergroup.core.service.CoordinateService;
+import com.scheideggergroup.core.service.TransformationService;
 
 /**
  * Implementation of the CoordinateService interface for the planet Earth as being a perfectly round sphere and without altitude difference.
@@ -22,6 +26,10 @@ import com.scheideggergroup.core.service.CoordinateService;
 public class CoordinateServiceImpl implements CoordinateService {
 
     private static Logger logger = LoggerFactory.getLogger(CoordinateServiceImpl.class);
+    
+    @Autowired
+    @Qualifier("transformationService")
+    TransformationService transformationService;
 
     private static final double EARTH_RADIUS = 6371000;
 
@@ -171,6 +179,13 @@ public class CoordinateServiceImpl implements CoordinateService {
         route.setSteps(steps);
         route.setTotalDistance(totalDistance);
         
+        return route;
+    }
+
+    @Override
+    public Route calculateRouteFromPolyline(Polyline polyline) {
+        Route route = transformationService.map(polyline);
+        route = this.calculateStepsOnRoute(route);
         return route;
     }
 

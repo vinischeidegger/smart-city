@@ -13,9 +13,8 @@ public class Polyline {
 	 * Creates a new instance of Polyline.
 	 * @param encodedPolyline the encoded polyline.
 	 */
-	public Polyline(String encodedPolyline) {
+	public Polyline() {
 		super();
-		this.encodedPolyline = encodedPolyline;
 	}
 
 	/**

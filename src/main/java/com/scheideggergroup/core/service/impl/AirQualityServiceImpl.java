@@ -1,6 +1,6 @@
 package com.scheideggergroup.core.service.impl;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -65,25 +65,33 @@ public class AirQualityServiceImpl implements AirQualityService {
     @Override
     public Runnable publishAirQualityAverageLevel(Robot robot, List<AirQualityMeasure> airQualityMeasurements) {
         Runnable anounceAirQualityAverageLevel = () -> {
-            LocalDateTime timestamp = LocalDateTime.now();
+            Instant timestamp = Instant.now();
             logger.debug("Calculating readings average.");
-            double sumOfValues = 0;
-            int collectedQty = 0;
+            String qualityLevel = null;
             
-            for(AirQualityMeasure singleMeasure : airQualityMeasurements) {
-                boolean wasAlreadyCollected = singleMeasure.isCollectedForAverage();
-                if(!wasAlreadyCollected) {
-                    sumOfValues += singleMeasure.getPm25();
-                    collectedQty++;
-                    singleMeasure.setCollectedForAverage(true);
-                    logger.trace("Reading collected: " + singleMeasure);
+            if(airQualityMeasurements.size() > 0) {
+                double sumOfValues = 0;
+                int collectedQty = 0;
+                
+                for(AirQualityMeasure singleMeasure : airQualityMeasurements) {
+                    boolean wasAlreadyCollected = singleMeasure.isCollectedForAverage();
+                    if(!wasAlreadyCollected) {
+                        sumOfValues += singleMeasure.getPm25();
+                        collectedQty++;
+                        singleMeasure.setCollectedForAverage(true);
+                        logger.trace("Reading collected: " + singleMeasure);
+                    }
                 }
+                double readingsAvg = sumOfValues / (double) collectedQty;
+                qualityLevel = this.getQualityLevelStringFromPm25Value(readingsAvg);
+
+                logger.debug("Calculated average = " + readingsAvg );
+            } else {
+                qualityLevel = this.getQualityLevelStringFromPm25Value(this.getAirQualityReading());
             }
-            double readingsAvg = sumOfValues / (double) collectedQty;
-            String qualityLevel = this.getQualityLevelStringFromPm25Value(readingsAvg);
             AirQualityReport report = new AirQualityReport(timestamp, robot, qualityLevel);
             
-            logger.debug("Calculated average = " + readingsAvg + " report = " + report);
+            this.publishReportFromMeasuringSource(robot, report);
         };
         return anounceAirQualityAverageLevel;
     };
@@ -93,7 +101,7 @@ public class AirQualityServiceImpl implements AirQualityService {
             final List<AirQualityMeasure> airQualityMeasurements, double distanceBetweenMeasures) {
         Runnable readParticleLevel = () -> {
             
-            LocalDateTime timestamp = LocalDateTime.now();
+            Instant timestamp = Instant.now();
 
             double traveledDistance = distanceBetweenMeasures * airQualityMeasurements.size();
             Coordinate measuredPoint = coordService.getFinalPositionAfterMove(workRoute, traveledDistance);
@@ -112,7 +120,7 @@ public class AirQualityServiceImpl implements AirQualityService {
     @Override
     public void publishReportFromAllStationsAndRobot(List<MonitoringStation> stations, Robot robot) {
 
-        LocalDateTime timestamp = LocalDateTime.now();
+        Instant timestamp = Instant.now();
         
         // Publishing from all stations
         stations.forEach((station) -> {

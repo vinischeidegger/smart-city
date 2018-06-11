@@ -23,7 +23,8 @@ public class SmartCityTransformationServiceImplTests {
         		"q@}G[uEU_GBuP@cICmA?eI?qCB{FBkCI}BOyCMiAGcAC{AN{YFqD^}FR}CNu@JcAHu@b@_E`@}DVsB^mBTsAQ" + 
         		"KkCmAg@[YQOIOvAi@[m@e@s@g@GKCKAEJIn@g@GYGIc@ScBoAf@{A`@uAlBfAG`@";
 		
-		Polyline polylineToTest = new Polyline(encPolylineToTest);
+		Polyline polylineToTest = new Polyline();
+		polylineToTest.setEncodedPolyline(encPolylineToTest);
 		TransformationService polyServ = new SmartCityTransformationServiceImpl();
 		Route r = polyServ.map(polylineToTest);
 		int coordQuantity = r.getPath().size();

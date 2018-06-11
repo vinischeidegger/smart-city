@@ -5,6 +5,8 @@ import javax.validation.constraints.Min;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Class responsible to store coordinates in signaled decimal degrees.
  * @author scheidv1
@@ -48,6 +50,7 @@ public class Coordinate {
 	 * Gets the latitude of the coordinate in signaled decimal degrees.
 	 * @return a double with the latitude of the coordinate in signaled decimal degrees.
 	 */
+	@JsonProperty("lat")
 	public double getLatitude() {
 		return latitude;
 	}
@@ -64,6 +67,7 @@ public class Coordinate {
 	 * Gets the longitude of the coordinate in signaled decimal degrees.
 	 * @return a double with the longitude of the coordinate in signaled decimal degrees.
 	 */
+    @JsonProperty("lng")
 	public double getLongitude() {
 		return longitude;
 	}

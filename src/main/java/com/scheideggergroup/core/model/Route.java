@@ -1,7 +1,9 @@
 package com.scheideggergroup.core.model;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Route {
 
@@ -9,8 +11,9 @@ public class Route {
     private List<Step> steps;
     private double totalDistance;
     //This may be moved to a "Travel" class in the future to separate behavior.
-    private LocalDateTime travelStartTime;
+    private Instant travelStartTime;
 
+    @JsonIgnore
 	public List<Coordinate> getPath() {
 		return path;
 	}
@@ -21,7 +24,8 @@ public class Route {
 		this.path = path;
 	}
 
-    public List<Step> getSteps() {
+    @JsonIgnore
+	public List<Step> getSteps() {
         return steps;
     }
 
@@ -37,11 +41,11 @@ public class Route {
         this.totalDistance = totalDistance;
     }
 
-    public LocalDateTime getTravelStartTime() {
+    public Instant getTravelStartTime() {
         return travelStartTime;
     }
 
-    public void setTravelStartTime(LocalDateTime travelStartTime) {
+    public void setTravelStartTime(Instant travelStartTime) {
         this.travelStartTime = travelStartTime;
     }
 }

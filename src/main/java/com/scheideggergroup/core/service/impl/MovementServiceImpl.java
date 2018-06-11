@@ -6,6 +6,7 @@ import com.scheideggergroup.core.event.RobotMovementListener;
 import com.scheideggergroup.core.model.AirQualityMeasure;
 import com.scheideggergroup.core.model.Coordinate;
 import com.scheideggergroup.core.model.MonitoringStation;
+import com.scheideggergroup.core.model.Polyline;
 import com.scheideggergroup.core.model.Robot;
 import com.scheideggergroup.core.model.Route;
 import com.scheideggergroup.core.model.Step;
@@ -13,7 +14,7 @@ import com.scheideggergroup.core.service.AirQualityService;
 import com.scheideggergroup.core.service.CoordinateService;
 import com.scheideggergroup.core.service.MovementService;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -38,18 +39,23 @@ public class MovementServiceImpl implements MovementService {
     private static Logger logger = LoggerFactory.getLogger(MovementServiceImpl.class);
 
     @Autowired
-    @Qualifier("coordinateService")
-    CoordinateService coordService;
-    
-    @Autowired
     @Qualifier("taskScheduler")
     ThreadPoolTaskScheduler taskSched;
 
     @Autowired
+    @Qualifier("coordinateService")
+    CoordinateService coordService;
+    
+    @Autowired
     @Qualifier("airQualityService")
     AirQualityService airQualityService;
 
+    @Autowired
+    @Qualifier("webSocketService")
+    WebSocketService webSocketService;
+
     private List<MonitoringStation> measuringStations;
+    private List<Robot> movingRobots = new ArrayList<Robot>();
     
     @Override
     public void setMeasuringStations(List<MonitoringStation> measuringStations) {
@@ -77,6 +83,7 @@ public class MovementServiceImpl implements MovementService {
         final Route workRoute = workRobot.getCurrentRoute();
         final List<Step> workSteps = workRoute.getSteps();
         final double distanceBetweenMeasures = robot.getDistanceBetweenMeasures();
+        final double averageReadingInterval = robot.getAverageMeasureInterval();
         
         logger.debug("Setting the robot starting point.");
         robot.setLastMeasuredCoordinate(workSteps.get(0).getStartCoordinate());
@@ -89,7 +96,7 @@ public class MovementServiceImpl implements MovementService {
         
         Runnable anounceAirQualityAverageLevel = airQualityService.publishAirQualityAverageLevel(workRobot, airQualityMeasurements);
 
-        final LocalDateTime travelStartTime = LocalDateTime.now();
+        final Instant travelStartTime = Instant.now();
         route.setTravelStartTime(travelStartTime);
 
         logger.debug("Starting the robot journey.");
@@ -100,10 +107,10 @@ public class MovementServiceImpl implements MovementService {
         double particleReadingPeriodMilliSec = (distanceBetweenMeasures / robot.getSpeed()) * 1000;
         taskSched.scheduleAtFixedRate(readParticleLevel, (long) particleReadingPeriodMilliSec);
 
-        taskSched.scheduleAtFixedRate(anounceAirQualityAverageLevel, (long) 1000 * 60 * 1);
+        taskSched.scheduleAtFixedRate(anounceAirQualityAverageLevel, (long) (1000.0 * 60.0 * averageReadingInterval));
 
         try {
-            semaphore.tryAcquire(5, TimeUnit.MINUTES);
+            semaphore.tryAcquire(5, TimeUnit.DAYS);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -116,7 +123,7 @@ public class MovementServiceImpl implements MovementService {
             final Semaphore semaphore, final Route workRoute, final List<Step> workSteps, final List<RobotMovementListener> listeners) {
         Runnable monitorRobotMovement = () -> {
             
-            LocalDateTime timestamp = LocalDateTime.now();
+            Instant timestamp = Instant.now();
             
             double workSpeed = workRobot.getSpeed();
             double metersTraveledOnPeriod = workSpeed * (monitoringPeriodMilliSec/1000);
@@ -139,7 +146,7 @@ public class MovementServiceImpl implements MovementService {
             workRobot.setStationsWithinRange(stationsWithinRange);
             workRobot.setLastMeasuredTimestamp(timestamp);
 
-            Robot stateRobot = new Robot();
+            Robot stateRobot = new Robot(workRobot.getId(), workRobot.getRobotName());
             stateRobot.setCurrentRoute(workRoute);
             stateRobot.setSpeed((int)workSpeed);
             stateRobot.setLastMeasuredCoordinate(measuredPoint);
@@ -153,7 +160,7 @@ public class MovementServiceImpl implements MovementService {
                 listener.onRobotMovement(this, args);
             }
             
-            if (totalTraveledDistance >= workRoute.getTotalDistance()) {
+            if (workRobot.isSignalToStop() || totalTraveledDistance >= workRoute.getTotalDistance()) {
                 semaphore.release();
             }
         };
@@ -178,6 +185,60 @@ public class MovementServiceImpl implements MovementService {
         }
         
         return stationsWithinRange;
+    }
+
+    @Override
+    public Robot moveNewRobotAlongPolyline(Polyline polyline) {
+        
+        int speed = 3;
+        int refreshRate = 10; // readings per second
+        double distanceBetweenAirQualityMeasures = 100;
+        double monitoringStationWarningRange = 100;
+        double averageReadingInterval = 15;
+
+        Route route = coordService.calculateRouteFromPolyline(polyline);
+        
+        MonitoringStation station1 = new MonitoringStation("Buckingham Palace", new Coordinate(51.501299, -0.141935));
+        MonitoringStation station2 = new MonitoringStation("Temple Station", new Coordinate(51.510852, -0.114165));
+        
+        List<MonitoringStation> measuringStations = new ArrayList<MonitoringStation>();
+        measuringStations.add(station1);
+        measuringStations.add(station2);
+        
+        this.setMeasuringStations(measuringStations);
+        
+        Robot robot = new Robot();
+        robot.setCurrentRoute(route);
+        robot.setSpeed(speed);
+        robot.setAverageMeasureInterval(averageReadingInterval);
+        robot.setRefreshRate(refreshRate);
+        robot.setDistanceBetweenMeasures(distanceBetweenAirQualityMeasures);
+        robot.setMonitoringStationDistanceRange(monitoringStationWarningRange);
+        
+        this.movingRobots.add(robot);
+        
+        robot.registerRobotMovementListener((sender, args) -> {
+            webSocketService.updateMovementTopic(robot, args);
+        });
+        
+        robot.registerAirQualityReportListener((sender, args) -> {
+            webSocketService.updateReportsTopic(robot, args);
+        });
+        
+        taskSched.execute(() -> {
+            this.moveRobotAlongRoute(robot, route);
+        });
+        
+        return robot;
+    }
+    
+    @Override
+    public void stopRobot(String id) {
+        this.movingRobots.forEach((robot) -> {
+            if(robot.getId().equals(id)) {
+                robot.setSignalToStop(true);
+            }
+        });
     }
 
 }

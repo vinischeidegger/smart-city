@@ -17,7 +17,7 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 
-@Service(value = "orikaTransformationService")
+@Service(value = "transformationService")
 public class SmartCityTransformationServiceImpl implements TransformationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SmartCityTransformationServiceImpl.class);

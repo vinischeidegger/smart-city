@@ -1,6 +1,6 @@
 package com.scheideggergroup.core.model;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class AirQualityMeasure {
     
@@ -14,13 +14,13 @@ public class AirQualityMeasure {
         Unhealthy
     }
 
-    private LocalDateTime measureDateTime;
+    private Instant measureDateTime;
     private Coordinate location;
     private boolean collectedForAverage;
     private Robot source;
     private double pm25;
     
-    public AirQualityMeasure(LocalDateTime measureDateTime, Coordinate location, Robot source, double pm25) {
+    public AirQualityMeasure(Instant measureDateTime, Coordinate location, Robot source, double pm25) {
         super();
         this.measureDateTime = measureDateTime;
         this.location = location;
@@ -36,7 +36,7 @@ public class AirQualityMeasure {
         this.collectedForAverage = collectedForAverage;
     }
 
-    public LocalDateTime getMeasureDateTime() {
+    public Instant getMeasureDateTime() {
         return measureDateTime;
     }
 

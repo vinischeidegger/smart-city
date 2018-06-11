@@ -2,6 +2,7 @@ package com.scheideggergroup.core.event;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.scheideggergroup.core.model.Coordinate;
 
 public abstract class AirQualityReportPublisher {
@@ -42,6 +43,7 @@ public abstract class AirQualityReportPublisher {
      * Gets the list of air quality report listeners.
      * @return
      */
+    @JsonIgnore
     public ArrayList<AirQualityReportListener> getAirQualityReportListeners() {
         return airQualityReportListeners;
     }

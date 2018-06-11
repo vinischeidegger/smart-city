@@ -1,6 +1,7 @@
 package com.scheideggergroup.core.service;
 
 import com.scheideggergroup.core.model.Coordinate;
+import com.scheideggergroup.core.model.Polyline;
 import com.scheideggergroup.core.model.Route;
 import com.scheideggergroup.core.model.Step;
 
@@ -59,5 +60,12 @@ public interface CoordinateService {
      * @return the route with all steps calculated.
      */
     public Route calculateStepsOnRoute(Route route);
+
+    /**
+     * Calculates the route, given a polyline.
+     * @param polyline the polyline containing a path.
+     * @return the route with all steps calculated.
+     */
+    public Route calculateRouteFromPolyline(Polyline polyline);
 
 }

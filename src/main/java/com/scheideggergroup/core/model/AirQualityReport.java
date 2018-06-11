@@ -1,17 +1,18 @@
 package com.scheideggergroup.core.model;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.scheideggergroup.core.event.AirQualityReportPublisher;
 
 public class AirQualityReport {
     
-    private LocalDateTime timestamp;
+    private Instant timestamp;
     private Coordinate location;
     private String qualityLevel;
     private AirQualityReportPublisher source;
     
-    public AirQualityReport(LocalDateTime timestamp, AirQualityReportPublisher source, String qualityLevel) {
+    public AirQualityReport(Instant timestamp, AirQualityReportPublisher source, String qualityLevel) {
         super();
         this.timestamp = timestamp;
         this.location = source.getGeoLocation();
@@ -19,10 +20,10 @@ public class AirQualityReport {
         this.source = source;
     }
     
-    public LocalDateTime getTimestamp() {
+    public Instant getTimestamp() {
         return timestamp;
     }
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
     }
     public Coordinate getLocation() {
@@ -31,14 +32,15 @@ public class AirQualityReport {
     public void setLocation(Coordinate location) {
         this.location = location;
     }
+    @JsonProperty("level")
     public String getQualityLevel() {
         return qualityLevel;
     }
     public void setQualityLevel(String qualityLevel) {
         this.qualityLevel = qualityLevel;
     }
-    public AirQualityReportPublisher getSource() {
-        return source;
+    public String getSource() {
+        return source.getSourceName();
     }
     public void setSource(AirQualityReportPublisher source) {
         this.source = source;

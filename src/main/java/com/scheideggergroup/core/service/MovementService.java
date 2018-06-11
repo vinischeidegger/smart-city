@@ -5,6 +5,7 @@ import java.util.concurrent.Semaphore;
 
 import com.scheideggergroup.core.event.RobotMovementListener;
 import com.scheideggergroup.core.model.MonitoringStation;
+import com.scheideggergroup.core.model.Polyline;
 import com.scheideggergroup.core.model.Robot;
 import com.scheideggergroup.core.model.Route;
 import com.scheideggergroup.core.model.Step;
@@ -27,5 +28,9 @@ public interface MovementService {
 
     public Runnable monitorRobotMovement(double monitoringPeriodMilliSec, Robot workRobot, Semaphore semaphore,
             Route workRoute, List<Step> workSteps, List<RobotMovementListener> listeners);
+
+    public Robot moveNewRobotAlongPolyline(Polyline polyline);
+
+    void stopRobot(String id);
     
 }

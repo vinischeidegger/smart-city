@@ -42,6 +42,7 @@ public class MovementServiceImplTests {
         int refreshRate = 10; // readings per second
         double distanceBetweenAirQualityMeasures = 100;
         double monitoringStationWarningRange = 100;
+        double averageReadingsInterval = 1;
 
         Route route = new Route();
         route.setPath(path);
@@ -49,6 +50,7 @@ public class MovementServiceImplTests {
         Robot robot = new Robot();
         robot.setCurrentRoute(route);
         robot.setSpeed(speed);
+        robot.setAverageMeasureInterval(averageReadingsInterval);
         robot.setRefreshRate(refreshRate);
         robot.setDistanceBetweenMeasures(distanceBetweenAirQualityMeasures);
         robot.setMonitoringStationDistanceRange(monitoringStationWarningRange);

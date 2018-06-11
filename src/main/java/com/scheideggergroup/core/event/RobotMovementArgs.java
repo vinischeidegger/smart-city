@@ -1,6 +1,6 @@
 package com.scheideggergroup.core.event;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import com.scheideggergroup.core.model.Coordinate;
 import com.scheideggergroup.core.model.Robot;
@@ -9,9 +9,9 @@ public class RobotMovementArgs {
 
     private Robot robot;
     private Coordinate robotCoordinate;
-    private LocalDateTime eventDatetime;
+    private Instant eventDatetime;
     
-    public RobotMovementArgs(Robot robot, Coordinate robotCoordinate, LocalDateTime eventDatetime) {
+    public RobotMovementArgs(Robot robot, Coordinate robotCoordinate, Instant eventDatetime) {
         super();
         this.robot = robot;
         this.robotCoordinate = robotCoordinate;
@@ -24,7 +24,7 @@ public class RobotMovementArgs {
     public Coordinate getRobotCoordinate() {
         return robotCoordinate;
     }
-    public LocalDateTime getEventDatetime() {
+    public Instant getEventDatetime() {
         return eventDatetime;
     }
 }

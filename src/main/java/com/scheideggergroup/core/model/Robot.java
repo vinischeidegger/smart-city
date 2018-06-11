@@ -1,9 +1,11 @@
 package com.scheideggergroup.core.model;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.scheideggergroup.core.event.AirQualityReportPublisher;
 import com.scheideggergroup.core.event.RobotMovementListener;
 
@@ -16,24 +18,46 @@ public class Robot extends AirQualityReportPublisher {
 
     private final static String DEFAULT_ROBOT_NAME = "robot";
     
+    private String id;
     private String robotName;
     private int speed;
-    private LocalDateTime lastMeasuredTimestamp;
+    private Instant lastMeasuredTimestamp;
     private Coordinate lastMeasuredCoordinate;
     private Route currentRoute;
     private double traveledDistance;
+    private double averageMeasureInterval;
     private double refreshRate;
     private double distanceBetweenMeasures;
     private double monitoringStationDistanceRange;
+    private boolean signalToStop;
+
     private List<MonitoringStation> stationsWithinRange;
     
     private List<RobotMovementListener> robotMovementListeners;
+
     
     public Robot() {
         super();
+        this.id = UUID.randomUUID().toString();
         this.robotName = DEFAULT_ROBOT_NAME;
         this.robotMovementListeners = new ArrayList<RobotMovementListener>();
         this.stationsWithinRange = new ArrayList<MonitoringStation>();
+        this.signalToStop = false;
+    }
+
+    public Robot(String id, String name) {
+        super();
+        this.signalToStop = false;
+        this.id = id;
+        this.robotName = name;
+    }
+
+    /**
+     * Gets the robot unique identifier.
+     * @return
+     */
+    public String getId() {
+        return this.id;
     }
 
     /**
@@ -56,7 +80,7 @@ public class Robot extends AirQualityReportPublisher {
      * Gets robot last measured time stamp.
      * @return
      */
-    public LocalDateTime getLastMeasuredTimestamp() {
+    public Instant getLastMeasuredTimestamp() {
         return lastMeasuredTimestamp;
     }
 
@@ -64,7 +88,7 @@ public class Robot extends AirQualityReportPublisher {
      * Sets robot last measured time stamp.
      * @param lastMeasuredTimestamp
      */
-    public void setLastMeasuredTimestamp(LocalDateTime lastMeasuredTimestamp) {
+    public void setLastMeasuredTimestamp(Instant lastMeasuredTimestamp) {
         this.lastMeasuredTimestamp = lastMeasuredTimestamp;
     }
 
@@ -125,6 +149,22 @@ public class Robot extends AirQualityReportPublisher {
     }
 
     /**
+     * Gets the robot interval between the average measure Reports.
+     * @return
+     */
+    public double getAverageMeasureInterval() {
+        return averageMeasureInterval;
+    }
+
+    /**
+     * Sets the robot interval between the average measure Reports.
+     * @param averageMeasureInterval
+     */
+    public void setAverageMeasureInterval(double averageMeasureInterval) {
+        this.averageMeasureInterval = averageMeasureInterval;
+    }
+
+    /**
      * Gets robot name. If no name was set it simply returns "robot".
      * @return
      */
@@ -153,6 +193,7 @@ public class Robot extends AirQualityReportPublisher {
      * Gets the the robot movement listeners. 
      * @return
      */
+    @JsonIgnore
     public List<RobotMovementListener> getRobotMovementListeners() {
         return robotMovementListeners;
     }
@@ -224,6 +265,7 @@ public class Robot extends AirQualityReportPublisher {
      * Register a Robot Movement Listener.
      * @param listener
      */
+    @JsonIgnore
     public void registerRobotMovementListener(RobotMovementListener listener) {
         this.robotMovementListeners.add(listener);
     };
@@ -232,8 +274,18 @@ public class Robot extends AirQualityReportPublisher {
      * Unregister a Robot Movement Listener.
      * @param listener
      */
+    @JsonIgnore
     public void unregisterRobotMovementListener(RobotMovementListener listener) {
         this.robotMovementListeners.remove(listener);
+    }
+
+    public void setSignalToStop(boolean b) {
+        this.signalToStop = b;
+        
+    }
+
+    public boolean isSignalToStop() {
+        return signalToStop;
     }
 
 }

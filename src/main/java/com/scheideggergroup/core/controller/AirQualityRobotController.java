@@ -26,15 +26,11 @@ public class AirQualityRobotController {
 
     @MessageMapping("/polyline")
     public Robot moveNewAirQualityRobotAlongPolyline(Polyline polyline) throws Exception {
-
         return movementService.moveNewRobotAlongPolyline(polyline);
-
     }
 
     @MessageMapping("/stop")
     public void StopRobot(Robot robot) throws Exception {
-
         movementService.stopRobot(robot.getId());
-
     }
 }

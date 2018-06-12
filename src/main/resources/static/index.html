@@ -1,67 +1,85 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Hello WebSocket</title>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
+
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script src="/app.js"></script>
-</head>
-<body>
-<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
-    enabled. Please enable
-    Javascript and reload this page!</h2></noscript>
-<div id="main-content" class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label for="connect">WebSocket connection:</label>
-                    <button id="connect" class="btn btn-default" type="submit">Connect</button>
-                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
-                    </button>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-12">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label for="polyline">What is the desired route?</label>
-                    <input type="text" id="polyline" class="form-control" placeholder="The polyline here...">
-                </div>
-                <button id="send" class="btn btn-default" type="submit">Send</button>
-            </form>
-        </div>
+
+  </head>
+  <body>
+  	<div id="wrapper">
+	    <div id="map"></div>
+	    <div id="robot_info" class= "floating effect8">
+	        <h3>Robot Info</h3>
+	        <div class="col-md-12">
+	            <form class="form-inline">
+	                <div class="form-group">
+	                    <label for="connect">WebSocket connection:</label>
+	                    <button id="connect" class="btn btn-default" type="submit">Connect</button>
+	                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
+	                    </button>
+	                </div>
+	            </form>
+	        </div>
+	        <div class="col-md-12">
+	            <form class="form-inline">
+	                <div class="form-group">
+	                    <label for="polyline">What is the desired route?</label>
+	                    <input type="text" id="polyline" class="form-control" placeholder="The polyline here...">
+	                </div>
+	                <button id="send" class="btn btn-default" type="submit">Send</button>
+	            </form>
+	        </div>
+	        <div class="col-md-12">
+	            <form class="form-inline">
+	                <span id="lat"></span>
+	                <span id="lng"></span>
+	            </form>
+	        </div>
+	    </div>
+		<div id="alerts" class= "effect8">
+	        <div class="panel panel-primary">
+				<div class="panel-heading">
+				<h3>Alerts</h3>
+				</div>
+				<div id="alert_container" class="panel-body">
+				</div>
+			</div>		
+		</div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table id="conversation" class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Robot</th>
-                    <th>Robot</th>
-                </tr>
-                </thead>
-                <tbody id="robot">
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <table id="conversation" class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Reports</th>
-                </tr>
-                </thead>
-                <tbody id="reports">
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-</body>
+    <script>
+      var map;
+      function initMap() {
+    	  var map = new google.maps.Map(document.getElementById('map'), {
+    		    zoom: 13,
+    		    center: {lat: 41.38093, lng: 2.18562}
+    		  });
+
+    		  marker = new google.maps.Marker({
+    		    map: map,
+    		    draggable: true,
+    		    animation: google.maps.Animation.DROP,
+    		    position: {lat: 59.327, lng: 18.067}
+    		  });
+    		  marker.addListener('click', toggleBounce);
+    		}
+
+    		function toggleBounce() {
+    		  if (marker.getAnimation() !== null) {
+    		    marker.setAnimation(null);
+    		  } else {
+    		    marker.setAnimation(google.maps.Animation.BOUNCE);
+    		  }
+   	}
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAT3qw3tncN4CVe4p7sLTLSyvz-7Pbk1o4&callback=initMap"
+    async defer></script>
+  </body>
 </html>

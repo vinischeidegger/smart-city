@@ -19,12 +19,10 @@ function connect() {
         setConnected(true);
         console.log('Connected: ' + frame);
         stompClient.subscribe('/topic/reports', function (report) {
-            //showReport(JSON.parse(report.body).content);
         	showReport(report.body);
         });
         stompClient.subscribe('/topic/robot', function (robot) {
-            //showReport(JSON.parse(report.body).content);
-        	showRobot(robot.body);
+        	showRobot(JSON.parse(robot.body).robotCoordinate);
         });
     });
 }
@@ -42,11 +40,30 @@ function sendPolyline() {
 }
 
 function showReport(message) {
-    $("#reports").append("<tr><td>" + message + "</td></tr>");
+	var report = JSON.parse(message);
+	var alertClass = "";
+	switch(report.level) {
+    case "Good":
+    	alertClass = "alert-success";
+        break;
+    case "Moderate":
+    	alertClass = "alert-info";
+        break;
+    case "USG":
+    	alertClass = "alert-warning";
+        break;
+    case "Unhealthy":
+    	alertClass = "alert-danger";
+        break;
+    default:
+    	alertClass = "alert-success";
+	}
+    $("#alert_container").append("<div class='" + alertClass + "'>" + message + "</span>");
 }
 
 function showRobot(message) {
-    $("#robot").html("<tr><td>" + message + "</td></tr>");
+    $("#lat").html(message.lat);
+    $("#lng").html(message.lng);
 }
 
 $(function () {

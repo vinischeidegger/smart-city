@@ -17,6 +17,7 @@ import com.scheideggergroup.core.service.MovementService;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -101,18 +102,20 @@ public class MovementServiceImpl implements MovementService {
 
         logger.debug("Starting the robot journey.");
         logger.debug("Checking stations up to " + robot.getMonitoringStationDistanceRange() + " meters away.");
-        taskSched.scheduleAtFixedRate(monitorRobotMovement, (long) monitoringPeriodMilliSec);
+        final ScheduledFuture<?> monitorMovement = taskSched.scheduleAtFixedRate(monitorRobotMovement, (long) monitoringPeriodMilliSec);
         
         // In order for the read to occur at every X meters we calculate the Task Scheduler Execution rate.
         double particleReadingPeriodMilliSec = (distanceBetweenMeasures / robot.getSpeed()) * 1000;
-        taskSched.scheduleAtFixedRate(readParticleLevel, (long) particleReadingPeriodMilliSec);
+        final ScheduledFuture<?> particleReading = taskSched.scheduleAtFixedRate(readParticleLevel, (long) particleReadingPeriodMilliSec);
 
-        taskSched.scheduleAtFixedRate(anounceAirQualityAverageLevel, (long) (1000.0 * 60.0 * averageReadingInterval));
+        final ScheduledFuture<?> averageReading = taskSched.scheduleAtFixedRate(anounceAirQualityAverageLevel, (long) (1000.0 * 60.0 * averageReadingInterval));
 
         try {
             semaphore.tryAcquire(5, TimeUnit.DAYS);
+            monitorMovement.cancel(true);
+            particleReading.cancel(true);
+            averageReading.cancel(true);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         

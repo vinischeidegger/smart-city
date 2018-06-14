@@ -35,6 +35,14 @@ function disconnect() {
     console.log("Disconnected");
 }
 
+function toggleConnection(tryToConnect) {
+	if (tryToConnect) {
+		connect();
+	} else  {
+		disconnect();
+	}
+}
+
 function sendPolyline() {
     stompClient.send("/app/polyline", {}, JSON.stringify({'encodedPolyline': $("#polyline").val()}));
 }
@@ -73,4 +81,10 @@ $(function () {
     $( "#connect" ).click(function() { connect(); });
     $( "#disconnect" ).click(function() { disconnect(); });
     $( "#send" ).click(function() { sendPolyline(); });
+    $( '#connectToggle' ).bootstrapToggle({
+        on: 'Connected',
+        off: 'Disconnected'
+      });
+    $( '#connectToggle' ).change(function() { toggleConnection(this.checked); });
+    
 });

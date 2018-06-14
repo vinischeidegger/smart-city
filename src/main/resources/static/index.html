@@ -6,8 +6,9 @@
     <meta charset="utf-8">
     <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/main.css" rel="stylesheet">
-
+	<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap2-toggle.min.css" rel="stylesheet">
     <script src="/webjars/jquery/jquery.min.js"></script>
+	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap2-toggle.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script src="/app.js"></script>
@@ -19,23 +20,15 @@
 	    <div id="robot_info" class= "floating effect8">
 	        <h3>Robot Info</h3>
 	        <div class="col-md-12">
-	            <form class="form-inline">
-	                <div class="form-group">
-	                    <label for="connect">WebSocket connection:</label>
-	                    <button id="connect" class="btn btn-default" type="submit">Connect</button>
-	                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">Disconnect
-	                    </button>
-	                </div>
-	            </form>
+	            WebSocket connection:
+	            <input id="connectToggle" type="checkbox" unchecked data-toggle="toggle" data-width="70" data-height="40">
 	        </div>
 	        <div class="col-md-12">
-	            <form class="form-inline">
-	                <div class="form-group">
-	                    <label for="polyline">What is the desired route?</label>
-	                    <input type="text" id="polyline" class="form-control" placeholder="The polyline here...">
-	                </div>
+                <div class="form-group">
+					<label for="polyline">What is the desired route (as encoded Polyline)?</label>
+					<textarea class="form-control" rows="5" id="polyline"></textarea>
 	                <button id="send" class="btn btn-default" type="submit">Send</button>
-	            </form>
+	            </div>
 	        </div>
 	        <div class="col-md-12">
 	            <form class="form-inline">
